@@ -1,6 +1,5 @@
-import { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   eslint: {
     ignoreDuringBuilds: true,
@@ -8,6 +7,13 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Amélioration de la compatibilité avec Vercel
+  experimental: {
+    // Optimisations pour les grands projets
+    turbotrace: {
+      logLevel: 'error'
+    }
+  }
 }
 
 export default nextConfig
