@@ -27,11 +27,50 @@ function createRoutesManifest(filePath) {
   fs.writeFileSync(filePath, JSON.stringify({ 
     version: 3, 
     basePath: "", 
+    pageChunks: [],
+    dataRoutes: [],
+    staticRoutes: [
+      {
+        page: "/",
+        regex: "^/(?:/)?$",
+        routeKeys: {},
+        namedRegex: "^/(?:/)?$"
+      },
+      {
+        page: "/_app",
+        regex: "^/_app(?:/)?$",
+        routeKeys: {},
+        namedRegex: "^/_app(?:/)?$"
+      },
+      {
+        page: "/_error",
+        regex: "^/_error(?:/)?$",
+        routeKeys: {},
+        namedRegex: "^/_error(?:/)?$"
+      }
+    ],
+    dynamicRoutes: [],
+    rsc: {
+      header: "RSC",
+      varyHeader: "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-URL"
+    },
     pages: {
-      "/": { dataRoute: "" },
-      "/_app": { dataRoute: "" },
-      "/_error": { dataRoute: "" }
-    } 
+      "/": {
+        "initialRevalidateSeconds": false,
+        "srcRoute": null,
+        "dataRoute": ""
+      },
+      "/_app": {
+        "initialRevalidateSeconds": false,
+        "srcRoute": null,
+        "dataRoute": ""
+      },
+      "/_error": {
+        "initialRevalidateSeconds": false,
+        "srcRoute": null,
+        "dataRoute": ""
+      }
+    }
   }, null, 2));
 }
 
