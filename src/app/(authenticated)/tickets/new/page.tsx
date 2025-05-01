@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui-bridge/card";
+import { Button } from "@/components/ui-bridge/button";
+import { Input } from '@/components/ui-bridge/input';
+import { Textarea } from '@/components/ui-bridge/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function NewTicketPage() {
