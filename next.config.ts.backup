@@ -7,15 +7,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'standalone',
-  distDir: '.next',
-  reactStrictMode: true,
-  swcMinify: true,
-  experimental: {
-    // Required for static export with output: 'standalone'
-    outputFileTracingRoot: process.cwd(),
-  },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Résolution de l'alias @/
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -25,4 +17,4 @@ const nextConfig = {
   }
 }
 
-module.exports = nextConfig; 
+export default nextConfig

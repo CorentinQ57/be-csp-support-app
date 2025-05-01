@@ -3,5 +3,6 @@
   "buildCommand": "node build-wrapper.js",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next/standalone",
+  "regions": ["iad1"]
 } 
