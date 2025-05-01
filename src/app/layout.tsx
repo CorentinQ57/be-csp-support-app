@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/context/AuthContext' // Importer AuthProvider
+import EnvCheck from '@/components/EnvCheck'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${inter.variable} ${poppins.variable} antialiased bg-background text-foreground`}>
         <AuthProvider>
+          <EnvCheck />
           {children}
         </AuthProvider>
       </body>
