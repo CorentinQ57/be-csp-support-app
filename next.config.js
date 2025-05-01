@@ -7,6 +7,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  output: 'standalone',
+  distDir: '.next',
   webpack: (config) => {
     // Résolution de l'alias @/
     config.resolve.alias = {
