@@ -21,63 +21,67 @@ function runCommand(command) {
   }
 }
 
+// Créer un manifest file au chemin spécifié
+function createRoutesManifest(filePath) {
+  console.log(`📄 Création d'un fichier routes-manifest.json à ${filePath}`);
+  fs.writeFileSync(filePath, JSON.stringify({ 
+    version: 3, 
+    basePath: "", 
+    pages: {
+      "/": { dataRoute: "" },
+      "/_app": { dataRoute: "" },
+      "/_error": { dataRoute: "" }
+    } 
+  }, null, 2));
+}
+
 // Vérifier si le répertoire .next existe et créer les fichiers essentiels
 function ensureNextOutputExists() {
+  // Créer le répertoire .next s'il n'existe pas
   const nextDir = path.join(process.cwd(), '.next');
   if (!fs.existsSync(nextDir)) {
     console.log('📁 Création du répertoire .next...');
     fs.mkdirSync(nextDir, { recursive: true });
   }
   
-  // Vérifier que le fichier routes-manifest.json existe, sinon créer un fichier vide
-  const routesManifestPath = path.join(nextDir, 'routes-manifest.json');
-  if (!fs.existsSync(routesManifestPath)) {
-    console.log('📄 Création d\'un fichier routes-manifest.json minimal...');
-    fs.writeFileSync(routesManifestPath, JSON.stringify({ 
-      version: 3, 
-      basePath: "", 
-      pages: {
-        "/": { dataRoute: "" },
-        "/_app": { dataRoute: "" },
-        "/_error": { dataRoute: "" }
-      } 
-    }, null, 2));
+  // Créer routes-manifest.json dans .next/
+  const nextRoutesManifestPath = path.join(nextDir, 'routes-manifest.json');
+  if (!fs.existsSync(nextRoutesManifestPath)) {
+    createRoutesManifest(nextRoutesManifestPath);
   }
   
-  // Vérifier ou créer le répertoire standalone
+  // Créer le répertoire standalone s'il n'existe pas
   const standaloneDir = path.join(nextDir, 'standalone');
   if (!fs.existsSync(standaloneDir)) {
     console.log('📁 Création du répertoire .next/standalone...');
     fs.mkdirSync(standaloneDir, { recursive: true });
-    
-    // Copier les fichiers minimaux de .next vers .next/standalone si standalone est vide
-    const appDir = path.join(standaloneDir, '.next');
-    if (!fs.existsSync(appDir)) {
-      fs.mkdirSync(appDir, { recursive: true });
-      
-      // Copier routes-manifest.json
-      if (fs.existsSync(routesManifestPath)) {
-        fs.copyFileSync(routesManifestPath, path.join(appDir, 'routes-manifest.json'));
+  }
+  
+  // Créer routes-manifest.json DIRECTEMENT dans .next/standalone/
+  const standaloneRoutesManifestPath = path.join(standaloneDir, 'routes-manifest.json');
+  if (!fs.existsSync(standaloneRoutesManifestPath)) {
+    createRoutesManifest(standaloneRoutesManifestPath);
+  }
+  
+  // Créer un package.json minimal dans standalone pour Vercel
+  const pkgJsonPath = path.join(standaloneDir, 'package.json');
+  if (!fs.existsSync(pkgJsonPath)) {
+    console.log('📄 Création d\'un package.json minimal dans .next/standalone/');
+    fs.writeFileSync(pkgJsonPath, JSON.stringify({
+      name: "nextjs-standalone",
+      version: "1.0.0",
+      private: true,
+      scripts: {
+        start: "node server.js"
       }
-    }
-    
-    // Créer un package.json minimal dans standalone pour Vercel
-    const pkgJsonPath = path.join(standaloneDir, 'package.json');
-    if (!fs.existsSync(pkgJsonPath)) {
-      fs.writeFileSync(pkgJsonPath, JSON.stringify({
-        name: "nextjs-standalone",
-        version: "1.0.0",
-        private: true,
-        scripts: {
-          start: "node server.js"
-        }
-      }, null, 2));
-    }
-    
-    // Créer un fichier server.js minimal
-    const serverPath = path.join(standaloneDir, 'server.js');
-    if (!fs.existsSync(serverPath)) {
-      fs.writeFileSync(serverPath, `
+    }, null, 2));
+  }
+  
+  // Créer un fichier server.js minimal
+  const serverPath = path.join(standaloneDir, 'server.js');
+  if (!fs.existsSync(serverPath)) {
+    console.log('📄 Création d\'un server.js minimal dans .next/standalone/');
+    fs.writeFileSync(serverPath, `
 const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
@@ -104,8 +108,17 @@ app.prepare().then(() => {
     console.log(\`> Ready on http://\${hostname}:\${port}\`);
   });
 });
-      `);
-    }
+    `);
+  }
+  
+  // Créer aussi un répertoire .next à l'intérieur de .next/standalone si nécessaire
+  const nestedNextDir = path.join(standaloneDir, '.next');
+  if (!fs.existsSync(nestedNextDir)) {
+    console.log('📁 Création du répertoire .next/standalone/.next...');
+    fs.mkdirSync(nestedNextDir, { recursive: true });
+    
+    // Copier routes-manifest.json aussi dans .next/standalone/.next/
+    fs.copyFileSync(nextRoutesManifestPath, path.join(nestedNextDir, 'routes-manifest.json'));
   }
 }
 

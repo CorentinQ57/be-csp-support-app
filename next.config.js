@@ -10,11 +10,7 @@ const nextConfig = {
   output: 'standalone',
   distDir: '.next',
   reactStrictMode: true,
-  swcMinify: true,
-  experimental: {
-    // Required for static export with output: 'standalone'
-    outputFileTracingRoot: process.cwd(),
-  },
+  outputFileTracingRoot: process.cwd(),
   webpack: (config) => {
     // Résolution de l'alias @/
     config.resolve.alias = {
